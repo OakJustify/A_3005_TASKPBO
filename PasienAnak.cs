@@ -1,5 +1,6 @@
-namespace Praktikum8
+namespace tugas_praktikum
 {
+    // Mewarisi Pasien, memiliki method Menangis()
     public class PasienAnak : Pasien
     {
         public PasienAnak(string nama, int umur, string keluhan) : base(nama, umur, keluhan)
@@ -8,15 +9,14 @@ namespace Praktikum8
 
         public void Menangis()
         {
-            Console.WriteLine($"[Menangis] {Nama} menangis terus karena keluhan: {Keluhan}.");
-            Console.WriteLine("            Perlu dihibur orang tua agar tetap tenang dan mau diperiksa.");
+            Console.WriteLine($"    {Nama} menangis terus karena keluhan: {Keluhan}.");
+            Console.WriteLine($"    Perlu dihibur orang tua agar {Nama} mau diperiksa.");
         }
 
+        // Override versi PasienAnak
         public override void Aktivitas()
         {
-            Console.WriteLine($"[PasienAnak] {Nama} ({Umur} th) - Sedang menangis, perlu dihibur oleh orang tua.");
+            Console.WriteLine($"  [PasienAnak] {Nama} ({Umur} th) - menangis dan perlu dihibur orang tua.");
         }
-
-        public override string Peran() => "Pasien anak (0-12 tahun)";
     }
 }

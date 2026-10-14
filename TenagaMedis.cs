@@ -1,6 +1,9 @@
-namespace Praktikum8
+namespace tugas_praktikum
 {
-    public class TenagaMedis : Orang
+    // Mewarisi Orang, menambah spesialisasi.
+    // Abstract karena TugasUtama() wajib dijelaskan oleh
+    // kelas anak (Dokter dan Perawat).
+    public abstract class TenagaMedis : Orang
     {
         public string Spesialisasi { get; set; }
 
@@ -11,15 +14,16 @@ namespace Praktikum8
 
         public void CekSpesialis()
         {
-            Console.WriteLine($"  Spesialisasi: {Spesialisasi}");
-            Console.WriteLine($"  Lokasi      : Ruang Praktek {Spesialisasi}");
+            Console.WriteLine($"    Spesialisasi  : {Spesialisasi}");
         }
 
+        // Wajib diimplementasikan oleh setiap turunan
+        public abstract void TugasUtama();
+
+        // Override versi TenagaMedis
         public override void Aktivitas()
         {
-            Console.WriteLine($"[TenagaMedis] {Nama} ({Umur} th) - Bekerja sebagai tenaga medis ({Spesialisasi}).");
+            Console.WriteLine($"  [TenagaMedis] {Nama} ({Umur} th) - berkedudukan sebagai tenaga medis {Spesialisasi}.");
         }
-
-        public override string Peran() => $"Tenaga medis ({Spesialisasi})";
     }
 }

@@ -1,5 +1,6 @@
-namespace Praktikum8
+namespace tugas_praktikum
 {
+    // Mewarisi Pasien, memiliki method Konsultasi()
     public class PasienDewasa : Pasien
     {
         public PasienDewasa(string nama, int umur, string keluhan) : base(nama, umur, keluhan)
@@ -8,15 +9,14 @@ namespace Praktikum8
 
         public void Konsultasi()
         {
-            Console.WriteLine($"[Konsultasi] {Nama} berkonsultasi tentang keluhan: {Keluhan}.");
-            Console.WriteLine("              -> Tenang, keluhan bisa membaik dengan istirahat & obat.");
+            Console.WriteLine($"    {Nama} berkonsultasi tentang keluhan: {Keluhan}.");
+            Console.WriteLine($"    Tenang, keluhan {Nama} bisa membaik dengan istirahat dan obat.");
         }
 
+        // Override versi PasienDewasa
         public override void Aktivitas()
         {
-            Console.WriteLine($"[PasienDewasa] {Nama} ({Umur} th) - Sedang berkonsultasi dengan dokter.");
+            Console.WriteLine($"  [PasienDewasa] {Nama} ({Umur} th) - berkonsultasi dengan dokter.");
         }
-
-        public override string Peran() => "Pasien dewasa (13+ tahun)";
     }
 }

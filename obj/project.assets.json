@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/podistrict/Projects/A PROGRAMMING LANGUAGE/C#/00_Practice/Week8/Week8.csproj",
+      "projectUniqueName": "/home/podistrict/Projects/A PROGRAMMING LANGUAGE/C#/00_Practice/A_3005_TASKPBO/Week8.csproj",
       "projectName": "Week8",
-      "projectPath": "/home/podistrict/Projects/A PROGRAMMING LANGUAGE/C#/00_Practice/Week8/Week8.csproj",
+      "projectPath": "/home/podistrict/Projects/A PROGRAMMING LANGUAGE/C#/00_Practice/A_3005_TASKPBO/Week8.csproj",
       "packagesPath": "/home/podistrict/.nuget/packages/",
-      "outputPath": "/home/podistrict/Projects/A PROGRAMMING LANGUAGE/C#/00_Practice/Week8/obj/",
+      "outputPath": "/home/podistrict/Projects/A PROGRAMMING LANGUAGE/C#/00_Practice/A_3005_TASKPBO/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/podistrict/.nuget/NuGet/NuGet.Config"

@@ -1,51 +1,49 @@
-namespace Praktikum8
+namespace tugas_praktikum
 {
-    // RumahSakit "memiliki" daftar orang (composition, diamond filled)
+    // RumahSakit memiliki (composition) kumpulan Orang
     public class RumahSakit
     {
-        private readonly List<Orang> daftarOrang = new List<Orang>();
+        public string NamaRumahSakit { get; set; }
+        public List<Orang> daftarOrang = new List<Orang>();
+
+        public RumahSakit(string namaRumahSakit)
+        {
+            NamaRumahSakit = namaRumahSakit;
+        }
 
         public void TambahOrang(Orang orang)
         {
             daftarOrang.Add(orang);
-            Console.WriteLine($"  [Tambah] {orang.Ringkas()} berhasil ditambahkan.");
+            Console.WriteLine($"    [Tambah] {orang.Nama} ({orang.GetType().Name})");
         }
 
         public void DaftarOrang()
         {
-            Console.WriteLine("  +---------------+------------------+-------------+");
-            Console.WriteLine("  | KELAS         | NAMA              | UMUR        |");
-            Console.WriteLine("  +---------------+------------------+-------------+");
-
-            foreach (Orang o in daftarOrang)
-            {
-                Console.WriteLine($"  {o}");
-            }
-
-            Console.WriteLine("  +---------------+------------------+-------------+");
-            Console.WriteLine($"  Total orang terdaftar: {daftarOrang.Count}\n");
-        }
-
-        public void DetailOrang()
-        {
-            int no = 1;
-            foreach (Orang o in daftarOrang)
-            {
-                Console.WriteLine($"\n  [{no++}] Objek bertipe {o.GetType().Name}");
-                o.InfoOrang();
-                o.Aktivitas();
-            }
+            string judul = "  ===== DAFTAR ORANG DI " + NamaRumahSakit.ToUpperInvariant() + " =====";
 
             Console.WriteLine();
+            Console.WriteLine(judul);
+            Console.WriteLine(new string('=', judul.Length));
+
+            foreach (Orang o in daftarOrang)
+            {
+                o.InfoOrang();
+            }
+
+            Console.WriteLine(new string('=', judul.Length));
+            Console.WriteLine("  Total orang: " + daftarOrang.Count);
         }
 
-        public int JumlahOrang => daftarOrang.Count;
+        // Memanggil Aktivitas() setiap objek di dalam daftar
+        public void JalankanAktivitas()
+        {
+            Console.WriteLine();
+            Console.WriteLine("  ===== AKTIVITAS SELURUH ORANG =====");
 
-        public int JumlahPasien => daftarOrang.Count(o => o is Pasien);
-
-        public int JumlahTenagaMedis => daftarOrang.Count(t => t is TenagaMedis);
-
-        // Salinan, supaya isi daftar asli tidak bisa diubah dari luar
-        public List<Orang> DaftarSeluruhOrang() => daftarOrang.ToList();
+            foreach (Orang o in daftarOrang)
+            {
+                o.Aktivitas();
+            }
+        }
     }
 }

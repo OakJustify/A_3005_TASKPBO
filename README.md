@@ -1,184 +1,137 @@
-# Week 8 - Inheritance & Polymorphism (Hospital System)
+# Week 8 - Inheritance & Polymorphism (Sistem Rumah Sakit)
 
-A C# console application that implements a **hospital management system** based on a UML class diagram. The program demonstrates object-oriented concepts such as **inheritance**, **method overriding**, **runtime polymorphism**, **upcasting/downcasting**, and **composition**.
+Program C# console sederhana yang mengimplementasikan **inheritance** dan
+**polymorphism** (override) sesuai UML class diagram rumah sakit.
 
----
-
-## 📖 Topic
-
-| Concept | Where it is used |
-|---|---|
-| Inheritance | `Pasien : Orang`, `TenagaMedis : Orang`, then two levels of subclasses |
-| Method Overriding | `Aktivitas()` is `virtual` in `Orang` and overridden in every subclass |
-| Runtime Polymorphism | One `List<Orang>`, one call `o.Aktivitas()`, seven different behaviours |
-| Upcasting / Downcasting | `PasienAnak` stored as `Orang`, then cast back with `is` / `as` |
-| Composition | `RumahSakit` owns a `List<Orang>` (filled diamond in the UML) |
-| Encapsulation | `daftarOrang` is `private readonly`, accessed through methods |
-| Constructor Chaining | Child constructors call `: base(...)` |
-| Pattern Matching | `if (o is PasienAnak pa)` to call subclass-only methods |
+Jawaban lengkap untuk 6 soal pada lembar tugas ada di **[JAWABAN.md](JAWABAN.md)**.
 
 ---
 
-## 🏗️ Class Hierarchy
+## Class hierarchy
 
 ```text
-RumahSakit  ==<o> (composition) -->  Orang
-                                        │
-              ┌─────────────────────────┴─────────────────────┐
-              │                                               │
-           Pasien                                      TenagaMedis
-         ┌────┴────┐                                 ┌──────┴──────┐
-     PasienAnak  PasienDewasa                    Dokter         Perawat
+RumahSakit  o--->  Orang                       (composition)
+                            |
+            +---------------+---------------+
+            |                               |
+         Pasien                       TenagaMedis
+       /        \                     /           \
+  PasienAnak   PasienDewasa       Dokter        Perawat
 ```
 
-| Class | Parent | Extra members | Own methods |
+| Class | Parent | Properties | Methods |
 |---|---|---|---|
-| `Orang` | – | `Nama`, `Umur` | `Aktivitas()`, `InfoOrang()`, `Peran()`, `Ringkas()`, `ToString()` |
-| `Pasien` | `Orang` | `Keluhan` | `CekKeluhan()` |
-| `PasienAnak` | `Pasien` | – | `Menangis()` |
-| `PasienDewasa` | `Pasien` | – | `Konsultasi()` |
-| `TenagaMedis` | `Orang` | `Spesialisasi` | `CekSpesialis()` |
-| `Dokter` | `TenagaMedis` | – | `Diagnosa()` |
-| `Perawat` | `TenagaMedis` | – | `CekPasien()` |
-| `RumahSakit` | – | `daftarOrang` (private) | `TambahOrang()`, `DaftarOrang()`, `DetailOrang()`, `JumlahOrang`, `JumlahPasien`, `JumlahTenagaMedis`, `DaftarSeluruhOrang()` |
+| `Orang` | - | `Nama`, `Umur` | `Aktivitas()`, `InfoOrang()` |
+| `Pasien` | `Orang` | `Keluhan`, `RekamMedis` | `CekKeluhan()`, override `Aktivitas()` dan `InfoOrang()` |
+| `PasienAnak` | `Pasien` | - | `Menangis()`, override `Aktivitas()` |
+| `PasienDewasa` | `Pasien` | - | `Konsultasi()`, override `Aktivitas()` |
+| `TenagaMedis` | `Orang` | `Spesialisasi` | `CekSpesialis()`, abstract `TugasUtama()`, override `Aktivitas()` |
+| `Dokter` | `TenagaMedis` | - | `Diagnosa(Pasien)`, `TugasUtama()`, override `Aktivitas()` |
+| `Perawat` | `TenagaMedis` | - | `CekPasien(Pasien)`, `TugasUtama()`, override `Aktivitas()` |
+| `RekamMedis` | - | `RiwayatKeluhan`, `HasilDiagnosa` | `TampilkanRekamMedis()` |
+| `RumahSakit` | - | `NamaRumahSakit`, `daftarOrang : List<Orang>` | `TambahOrang(Orang)`, `DaftarOrang()`, `JalankanAktivitas()` |
 
-Every subclass overrides `Aktivitas()` with its own behaviour — including the third level (`PasienAnak`, `PasienDewasa`, `Dokter`, `Perawat`), which proves that overriding keeps working at any depth.
+`Aktivitas()` ditulis `virtual` di `Orang` dan di-override di **setiap** subclass,
+termasuk pada tingkat kedua (`PasienAnak`, `PasienDewasa`, `Dokter`, `Perawat`).
 
 ---
 
-## 📁 Project Structure
+## Project structure
 
 ```text
-Week8/
+A_3005_TASKPBO/
 ├── Week8.csproj          # console project, net10.0, implicit usings
-├── Orang.cs              # base class (parent)
-├── Pasien.cs             # level 1 subclass
-├── PasienAnak.cs         # level 2 subclass
-├── PasienDewasa.cs       # level 2 subclass
-├── TenagaMedis.cs        # level 1 subclass
-├── Dokter.cs             # level 2 subclass
-├── Perawat.cs            # level 2 subclass
-├── RumahSakit.cs         # composition owner
-└── Program.cs            # entry point, namespace Praktikum8.App
+├── Orang.cs              # kelas dasar
+├── Pasien.cs             # turunan Orang
+├── PasienAnak.cs         # turunan Pasien
+├── PasienDewasa.cs       # turunan Pasien
+├── TenagaMedis.cs         # turunan Orang
+├── Dokter.cs             # turunan TenagaMedis
+├── Perawat.cs            # turunan TenagaMedis
+├── RekamMedis.cs         # rekam medis, dimiliki setiap Pasien
+├── RumahSakit.cs         # composition: memiliki List<Orang>
+├── Program.cs            # Main(): instruksi tugas + 6 soal
+├── JAWABAN.md            # jawaban lengkap 6 soal
+└── README.md
 ```
 
-Each class lives in its own file under the `Praktikum8` namespace; `Program` sits in `Praktikum8.App` and imports it with `using Praktikum8;`.
+Semua kelas berada pada namespace `tugas_praktikum`, begitu juga `Program`
+(`internal class Program`).
 
 ---
 
-## 🚀 How to Run
+## How to run
 
 ```bash
-cd 00_Practice/Week8
 dotnet run
 ```
 
-Requirements: .NET SDK 8.0 / 10.0 or later.
+Requirements: .NET SDK 10.0 atau lebih baru.
 
 ---
 
-## 🧪 Demo Cases in `Main()`
+## Isi Main()
 
-| Case | What it demonstrates |
+### Bagian A - Penyiapan data (instruksi 1, 2, 3)
+
+Membuat objek `RumahSakit`, membuat 6 objek orang dari setiap kelas, lalu
+menambahkannya dengan `TambahOrang()`.
+
+### Bagian B - Tampilkan semua data (instruksi 4)
+
+Memanggil `DaftarOrang()` yang menampilkan seluruh data lewat `InfoOrang()`.
+
+### Bagian C - Demonstrasi polymorphism (instruksi 5)
+
+Memanggil `rs.JalankanAktivitas()`, yang memanggil `Aktivitas()` pada setiap objek
+di dalam daftar. Satu method tersebut menghasilkan perilaku berbeda sesuai tipe
+aslinya.
+
+```text
+[Orang]         -> melakukan kegiatan umum.
+[Pasien]        -> menunggu giliran berobat, keluhan: Batuk kering.
+[PasienAnak]    -> menangis dan perlu dihibur orang tua.
+[PasienDewasa]  -> berkonsultasi dengan dokter.
+[Dokter]        -> memeriksa pasien sebagai spesialis Penyakit Dalam.
+[Perawat]       -> memantau kondisi pasien dan membantu dokter.
+```
+
+### Bagian D - Panggil method khusus (instruksi 6)
+
+Menggunakan pattern matching (`if (o is PasienAnak pa)`) untuk memanggil
+`Menangis()`, `Konsultasi()`, `CekKeluhan()`, `Diagnosa(Pasien)`,
+`CekPasien(Pasien)`, dan `CekSpesialis()` sesuai tipe objeknya.
+
+`Diagnosa()` dan `CekPasien()` menerima objek `Pasien` sebagai parameter,
+sehingga dokter dan perawat benar-benar memeriksa data pasien (nama, umur,
+keluhan) tanpa perlu menyimpannya di dalam class masing-masing.
+
+### SOAL 1 - SOAL 6
+
+Implementasi langsung dari 6 soal pada lembar tugas. Penjelasan jawabannya
+tertulis sebagai komentar ringkas di atas tiap bagian, sedangkan jawaban lengkap
+versi panjang ada di `JAWABAN.md`.
+
+| Soal | Isi |
 |---|---|
-| 1 | Create the `RumahSakit` object, create 6 people, register them with `TambahOrang()` |
-| 2 | Display all data — `DaftarOrang()` (formatted table via `ToString()`) and `DetailOrang()` |
-| 3 | Polymorphism — a `List<Orang>` of 7 different types, one call to `Aktivitas()` |
-| 4 | Calling subclass-only methods using pattern matching (`is`) |
-| 5 | Upcasting (implicit) and downcasting (with `is` and `as`) |
-| 6 | Polymorphic collections — `List<Pasien>` and `List<TenagaMedis>` |
-| 7 | Summary — counting each role with `Count(o => o is ...)` |
+| 1 | `Aktivitas()` pada objek Dokter dan Pasien |
+| 2 | `Diagnosa(Pasien)` pada objek Dokter |
+| 3 | Informasi lengkap (nama, umur, spesialisasi) dari objek Dokter |
+| 4 | `Menangis()` pada objek PasienAnak |
+| 5 | Variabel bertipe `Orang` diisi objek `Perawat`, lalu `Aktivitas()` |
+| 6 | Kesimpulan |
 
 ---
 
-## 📤 Sample Output
+## Konsep yang dipakai
 
-```text
-=== KASUS 2: MENAMPILKAN SEMUA DATA (DaftarOrang + InfoOrang) ===
-
-  +---------------+------------------+-------------+
-  | KELAS         | NAMA              | UMUR        |
-  +---------------+------------------+-------------+
-  | Orang         | Pak Budi           |  45 tahun |
-  | Pasien        | Ibu Sari           |  32 tahun |
-  | PasienAnak    | Andik              |   7 tahun |
-  | PasienDewasa  | Pak Hendra         |  55 tahun |
-  | Dokter        | Andi               |  41 tahun |
-  | Perawat       | Rina               |  29 tahun |
-  +---------------+------------------+-------------+
-  Total orang terdaftar: 6
-```
-
-```text
-=== KASUS 3: POLYMORPHISM - SATU METHOD, BANYAK PERILAKU ===
-
-[Orang] Pak Budi (45 th) - Sedang melakukan kegiatan umum di rumah sakit.
-[Pasien] Ibu Sari (32 th) - Sedang menunggu giliran berobat, keluhan: Batuk kering.
-[PasienAnak] Andik (7 th) - Sedang menangis, perlu dihibur oleh orang tua.
-[PasienDewasa] Pak Hendra (55 th) - Sedang berkonsultasi dengan dokter.
-[Dokter] dr. Andi (41 th) - Sedang memeriksa pasien sebagai spesialis Penyakit Dalam.
-[Perawat] Suster Rina (29 th) - Memantau kondisi pasien dan membantu dokter.
-```
-
----
-
-## 💡 Key Code Snippets
-
-**Overriding a base method**
-
-```csharp
-public class Orang
-{
-    public virtual void Aktivitas() => /* base behaviour */;
-}
-
-public class Dokter : TenagaMedis
-{
-    public override void Aktivitas() => /* doctor behaviour */;
-}
-```
-
-**Polymorphic call (runtime binding)**
-
-```csharp
-List<Orang> daftar = new List<Orang> { new Orang(...), new Dokter(...), new Perawat(...) };
-foreach (Orang o in daftar)
-    o.Aktivitas();   // executes the version of the actual runtime type
-```
-
-**Calling subclass-only methods**
-
-```csharp
-foreach (Orang o in rs.DaftarSeluruhOrang())
-{
-    if (o is PasienAnak pa) pa.Menangis();
-    else if (o is Dokter d)    d.Diagnosa();
-}
-```
-
-**Upcasting and downcasting**
-
-```csharp
-Orang jadiOrang = new PasienAnak("Dita", 6, "Demam tinggi"); // implicit upcasting
-
-if (jadiOrang is PasienAnak pa) pa.Menangis();               // safe downcasting
-Dokter? d = orangBiasa as Dokter;                           // null if it fails
-```
-
----
-
-## 📝 Notes
-
-- `Aktivitas()` and `Peran()` are `virtual`; `InfoOrang()`, `Ringkas()`, and `CekKeluhan()` / `CekSpesialis()` are inherited without being rewritten (code reusability).
-- `daftarOrang` is `private readonly`; `DaftarSeluruhOrang()` returns a copy so the internal list cannot be modified from outside (encapsulation).
-- The relationship `RumahSakit ◇─> Orang` is **composition**: the hospital owns the people it stores.
-
----
-
-## 📚 Related Modules
-
-- [Week3](../Week3) - Inheritance & UML class diagrams
-- [Week4](../Week4) - Polymorphism (overloading & overriding)
-- [Week7](../Week7) - Abstract classes, interfaces & class libraries
-
-Part of the `LEARN_C#` repository, released under the MIT License.
+| Konsep | penjelasan | Contoh kode |
+|---|---|---|
+| Inheritance | Kelas anak mewarisi data & method induk | `class Dokter : TenagaMedis` |
+| Virtual | Method yang boleh ditulis ulang anak | `public virtual void Aktivitas()` |
+| Override | Menulis ulang method virtual induk | `public override void Aktivitas()` |
+| Polymorphism | Satu pemanggilan, banyak perilaku | `o.Aktivitas()` untuk 6 tipe |
+| Upcasting | Objek anak disimpan pada variabel induk | `Orang oPerawat = rina;` |
+| Downcasting | Mengambil kembali tipe asli objek | `if (o is Perawat p) p.CekPasien(hendra);` |
+| Dependency | Objek diberikan sebagai parameter | `d.Diagnosa(sari)` |
+| Abstraction | Class abstract dengan method abstract | `TenagaMedis` abstract, wajib `TugasUtama()` |

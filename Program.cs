@@ -1,182 +1,120 @@
-using System.Text;
-using Praktikum8;
-
-namespace Praktikum8.App
+namespace tugas_praktikum
 {
-    class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
+            // 1. Membuat objek
+            RumahSakit rumahSakit = new("RS Sehat Bersama");
+            Dokter dokter = new("Dr. Budi", 35, "Penyakit Dalam");
+            Perawat perawat = new("Siti", 28, "Keperawatan Umum");
+            PasienAnak pasienAnak = new("Andi", 8, "Demam");
+            PasienDewasa pasienDewasa = new("Rina", 25, "Sakit kepala");
 
-            Judul("WEEK 8 - INHERITANCE & POLYMORPHISM (SISTEM RUMAH SAKIT)");
+            // 2. Mendaftarkan objek ke rumah sakit
+            DaftarkanOrang(rumahSakit, dokter, perawat, pasienAnak, pasienDewasa);
 
-            // Kasus 1: membuat objek dan mendaftarkannya ke rumah sakit
-            Judul("KASUS 1: MEMBUAT OBJEK & MENAMBAHKAN KE RUMAH SAKIT");
+            // 3. Daftar orang dan aktivitas tiap orang (polimorfisme)
+            TampilkanDaftarOrang(rumahSakit);
 
-            RumahSakit rs = new RumahSakit();
+            // 4. Method khusus tiap kelas
+            TampilkanMethodKhusus(dokter, perawat, pasienAnak, pasienDewasa);
 
-            Orang pengunjung     = new Orang("Pak Budi", 45);
-            Pasien pasienUmum   = new Pasien("Ibu Sari", 32, "Batuk kering");
-            PasienAnak andik    = new PasienAnak("Andik", 7, "Demam");
-            PasienDewasa hendra = new PasienDewasa("Pak Hendra", 55, "Nyeri dada");
-            Dokter drAndi       = new Dokter("Andi", 41, "Penyakit Dalam");
-            Perawat susRina     = new Perawat("Rina", 29, "Perawatan Intensif");
+            // 5. Rekam medis pasien dewasa (diisi oleh dokter pada langkah 4)
+            Judul("REKAM MEDIS PASIEN DEWASA");
+            TampilkanRekamMedis(pasienDewasa);
 
-            rs.TambahOrang(pengunjung);
-            rs.TambahOrang(pasienUmum);
-            rs.TambahOrang(andik);
-            rs.TambahOrang(hendra);
-            rs.TambahOrang(drAndi);
-            rs.TambahOrang(susRina);
-            Console.WriteLine();
+            // 6. Variabel bertipe Orang yang berisi objek Perawat
+            Judul("VARIABEL ORANG BERISI PERAWAT");
+            TampilkanPolimorfisme(perawat);
 
-            // Kasus 2: menampilkan semua data orang
-            Judul("KASUS 2: MENAMPILKAN SEMUA DATA (DaftarOrang + InfoOrang)");
-            rs.DaftarOrang();
-            rs.DetailOrang();
-
-            // Kasus 3: polymorphism - satu method, banyak perilaku
-            Judul("KASUS 3: POLYMORPHISM - SATU METHOD, BANYAK PERILAKU");
-
-            List<Orang> daftarPolimorfis = new List<Orang>
-            {
-                new Orang("Pak Budi", 45),
-                new Pasien("Ibu Sari", 32, "Batuk kering"),
-                new PasienAnak("Andik", 7, "Demam"),
-                new PasienDewasa("Pak Hendra", 55, "Nyeri dada"),
-                new Dokter("Andi", 41, "Penyakit Dalam"),
-                new Perawat("Rina", 29, "Perawatan Intensif"),
-                new PasienAnak("Caca", 5, "Batuk pilek"),
-            };
-
-            foreach (Orang o in daftarPolimorfis)
-            {
-                o.Aktivitas();
-            }
-            Console.WriteLine();
-
-            // Kasus 4: memanggil method khusus tiap kelas
-            Judul("KASUS 4: MEMANGGIL METHOD KHUSUS (pattern matching)");
-
-            foreach (Orang o in rs.DaftarSeluruhOrang())
-            {
-                Console.WriteLine($"\n  Objek: {o.Ringkas()}");
-
-                if (o is PasienAnak pa)
-                {
-                    Console.WriteLine("  -> bertipe PasienAnak:");
-                    pa.Menangis();
-                    pa.CekKeluhan();
-                }
-                else if (o is PasienDewasa pd)
-                {
-                    Console.WriteLine("  -> bertipe PasienDewasa:");
-                    pd.Konsultasi();
-                    pd.CekKeluhan();
-                }
-                else if (o is Pasien p)
-                {
-                    Console.WriteLine("  -> bertipe Pasien:");
-                    p.CekKeluhan();
-                }
-                else if (o is Dokter d)
-                {
-                    Console.WriteLine("  -> bertipe Dokter:");
-                    d.Diagnosa();
-                    d.CekSpesialis();
-                }
-                else if (o is Perawat pr)
-                {
-                    Console.WriteLine("  -> bertipe Perawat:");
-                    pr.CekPasien();
-                    pr.CekSpesialis();
-                }
-                else
-                {
-                    Console.WriteLine("  -> hanya orang biasa (tidak punya method khusus).");
-                }
-            }
-            Console.WriteLine();
-
-            // Kasus 5: upcasting & downcasting
-            Judul("KASUS 5: UPCASTING & DOWNCASTING");
-
-            PasienAnak dita = new PasienAnak("Dita", 6, "Demam tinggi");
-            Orang jadiOrang = dita;
-            Console.WriteLine($"  [Upcasting] Objek {dita.GetType().Name} disimpan pada variabel bertipe {nameof(Orang)}.");
-            Console.WriteLine($"              Tipe deklarasi  : {nameof(Orang)}");
-            Console.WriteLine($"              Tipe runtime    : {jadiOrang.GetType().Name}");
-            Console.WriteLine("              -> tetap memanggil Aktivitas() versi PasienAnak.\n");
-
-            Orang refill = new Perawat("Rina", 29, "Perawatan Intensif");
-            if (refill is Perawat perawatRina)
-            {
-                Console.WriteLine($"  [Downcasting \"is\"] Berhasil: {refill.Nama} adalah Perawat.");
-                perawatRina.CekPasien();
-            }
-            else
-            {
-                Console.WriteLine("  [Downcasting \"is\"] Gagal: objek tersebut bukan Perawat.");
-            }
-
-            Orang orangBiasa = new Orang("Pak Budi", 45);
-            Dokter? bukanDokter = orangBiasa as Dokter;
-            Console.WriteLine($"\n  [Downcasting \"as\"] 'Pak Budi' as Dokter -> {(bukanDokter == null ? "null (tidak bisa di-cast)" : "berhasil")}");
-            Console.WriteLine();
-
-            // Kasus 6: kumpulan polimorfis (List<TipeDasar>)
-            Judul("KASUS 6: KUMPULAN POLIMORFIS (List<TipeDasar>)");
-
-            List<Pasien> daftarPasien = new List<Pasien>
-            {
-                new Pasien("Ibu Sari", 32, "Batuk kering"),
-                new PasienAnak("Andik", 7, "Demam"),
-                new PasienDewasa("Pak Hendra", 55, "Nyeri dada"),
-            };
-
-            foreach (Pasien p in daftarPasien)
-            {
-                Console.WriteLine($"  {p.GetType().Name,-13} -> {p.Nama} ({p.Umur} th)");
-                p.CekKeluhan();
-            }
-
-            List<TenagaMedis> daftarMedis = new List<TenagaMedis>
-            {
-                new Dokter("Andi", 41, "Penyakit Dalam"),
-                new Perawat("Rina", 29, "Perawatan Intensif"),
-                new Dokter("Sari", 38, "Anak"),
-            };
-
-            foreach (TenagaMedis t in daftarMedis)
-            {
-                Console.WriteLine($"  {t.GetType().Name,-13} -> {t.Nama} ({t.Spesialisasi})");
-                t.CekSpesialis();
-            }
-            Console.WriteLine();
-
-            // Kasus 7: ringkasan data rumah sakit
-            Judul("KASUS 7: RINGKASAN DATA RUMAH SAKIT");
-
-            List<Orang> semua = rs.DaftarSeluruhOrang();
-            Console.WriteLine($"  Total orang terdaftar : {rs.JumlahOrang} orang");
-            Console.WriteLine($"  Jumlah pasien         : {rs.JumlahPasien} orang");
-            Console.WriteLine($"  Jumlah tenaga medis   : {rs.JumlahTenagaMedis} orang");
-            Console.WriteLine($"  Jumlah dokter         : {semua.Count(o => o is Dokter)} orang");
-            Console.WriteLine($"  Jumlah perawat        : {semua.Count(o => o is Perawat)} orang");
-            Console.WriteLine($"  Jumlah pasien anak    : {semua.Count(o => o is PasienAnak)} orang");
-            Console.WriteLine($"  Jumlah pasien dewasa  : {semua.Count(o => o is PasienDewasa)} orang");
-            Console.WriteLine("\n  CATATAN: PasienAnak & PasienDewasa ikut terhitung sebagai Pasien,");
-            Console.WriteLine("          begitu juga Dokter & Perawat ikut terhitung sebagai TenagaMedis.\n");
-
-            Console.WriteLine("============================================================");
-            Console.WriteLine("  PROGRAM SELESAI");
-            Console.WriteLine("============================================================");
+            Judul("PROGRAM SELESAI");
+            Console.ReadKey();
         }
 
-        static void Judul(string teks)
+        // Mendaftarkan setiap orang ke dalam rumah sakit
+        private static void DaftarkanOrang(RumahSakit rumahSakit, params Orang[] daftarOrang)
         {
-            Console.WriteLine($"=== {teks} ===\n");
+            foreach (Orang o in daftarOrang)
+            {
+                rumahSakit.TambahOrang(o);
+            }
+        }
+
+        // Menampilkan seluruh orang di rumah sakit beserta aktivitasnya
+        private static void TampilkanDaftarOrang(RumahSakit rumahSakit)
+        {
+            rumahSakit.DaftarOrang();
+            rumahSakit.JalankanAktivitas();
+        }
+
+        // Menampilkan method yang hanya dimiliki kelas tertentu
+        private static void TampilkanMethodKhusus(
+            Dokter dokter,
+            Perawat perawat,
+            PasienAnak pasienAnak,
+            PasienDewasa pasienDewasa)
+        {
+            Judul("METHOD KHUSUS");
+
+            // Dokter
+            Kelompok(dokter);
+            dokter.CekSpesialis();
+            dokter.TugasUtama();
+
+            // Hasil diagnosa dokter terhadap pasien dewasa
+            Judul("DIAGNOSA DOKTER");
+            dokter.Diagnosa(pasienDewasa);
+
+            // Perawat
+            Kelompok(perawat);
+            perawat.CekSpesialis();
+            perawat.TugasUtama();
+
+            // Pemeriksaan vital oleh perawat terhadap pasien anak
+            Judul("PEMERIKSAAN VITAL PERAWAT");
+            perawat.CekPasien(pasienAnak);
+
+            // Pasien anak
+            Kelompok(pasienAnak);
+            pasienAnak.CekKeluhan();
+            pasienAnak.Menangis();
+
+            // Pasien dewasa
+            Kelompok(pasienDewasa);
+            pasienDewasa.CekKeluhan();
+            pasienDewasa.Konsultasi();
+        }
+
+        // Menampilkan rekam medis seorang pasien
+        private static void TampilkanRekamMedis(Pasien pasien)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  " + pasien.Nama + " (" + pasien.Umur + " th)");
+            pasien.RekamMedis.TampilkanRekamMedis();
+        }
+
+        // Menunjukkan bahwa variabel Orang bisa menampung objek apa pun
+        private static void TampilkanPolimorfisme(Orang orang)
+        {
+            Console.WriteLine($"    Tipe variabel : {nameof(Orang)}");
+            Console.WriteLine($"    Isi variabel  : {orang.GetType().Name}");
+            Console.WriteLine();
+            orang.Aktivitas();
+        }
+
+        // Mencetak judul utama, indent 2 spasi
+        private static void Judul(string teks)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  ===== " + teks + " =====");
+        }
+
+        // Mencetak judul kelompok objek, indent 2 spasi
+        private static void Kelompok(Orang orang)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  [" + orang.GetType().Name + "] " + orang.Nama + " (" + orang.Umur + " th)");
         }
     }
 }
